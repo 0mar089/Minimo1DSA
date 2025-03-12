@@ -11,6 +11,7 @@ public class User {
 
     public User(String dni) {
         orders = new LinkedList<>();
+        this.dni = dni;
     }
 
     public void AddOrder(Order o) {
@@ -21,7 +22,9 @@ public class User {
         return dni;
     }
 
-    public List<Order> GetOrders() {
-        
+    public List<Order> orders() {
+        List<Order> orders = new ArrayList();
+        orders.addAll(orders);
+        return orders;
     }
 }

@@ -73,6 +73,4 @@ public class ProductManagerTest {
         List<Order> l = u.orders();
         Assert.assertEquals(1, l.size());
     }
-
-
 }

@@ -76,6 +76,11 @@ public class ProductManagerImpl implements ProductManager {
 
     @Override
     public User getUser(String number) {
+        for(User user : userList){
+            if(Objects.equals(user.GetDNI(), number)){
+                return user;
+            }
+        }
         return null;
     }
 }

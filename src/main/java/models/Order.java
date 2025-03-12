@@ -9,10 +9,12 @@ public class Order {
 
     String dni;
     Map<Integer, String> alimentos;
+    User u;
 
     public Order(String dni) {
         this.dni = dni;
         alimentos = new HashMap<>();
+        this.u = new User(dni);
     }
 
     public void addLP(int i, String s) {
