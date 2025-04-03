@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import edu.upc.dsa.models.Vuelo;
 import edu.upc.dsa.VuelosManagerImpl;
+import edu.upc.dsa.models.Equipaje;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
@@ -30,6 +31,7 @@ public class VuelosService {
             vm.addVuelo("VUELO1", "10:00", "12:00", vm.getAvion("AAA1"), "Barcelona", "Madrid");
             vm.addVuelo("VUELO2", "13:00", "23:00", vm.getAvion("AAA2"), "China", "Francia");
             vm.addVuelo("VUELO3", "16:00", "00:00", vm.getAvion("AAA3"), "Senegal", "Australia");
+            vm.getVuelo("VUELO1").addEquipaje(new Equipaje("EQUIP1", "OMAR"));
         }
     }
 
@@ -62,6 +64,52 @@ public class VuelosService {
         if (t == null) return Response.status(404).build();
         else  return Response.status(201).entity(t).build();
     }
+
+    @POST
+    @ApiOperation(value = "Facturar Equipaje en un Vuelo", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Equipaje.class),
+            @ApiResponse(code = 404, message = "Vuelo no encontrado")
+    })
+    @Path("/{id}/equipajes")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response facturarEquipaje(@PathParam("id") String id, Equipaje equipaje) {
+        Vuelo vuelo = this.vm.getVuelo(id);
+
+        if (vuelo == null) {
+            return Response.status(404).entity("Vuelo no encontrado").build();
+        }
+
+        vuelo.getEquipajes().add(equipaje);
+
+        return Response.status(201).entity(equipaje).build();
+    }
+
+
+    @GET
+    @ApiOperation(value = "Conseguir el equipaje facturado de un vuelo", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Equipaje.class, responseContainer="List"),
+            @ApiResponse(code = 404, message = "Vuelo no encontrado")
+    })
+    @Path("/{idVuelo}/equipajes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEquipajeFacturado(@PathParam("idVuelo") String idVuelo) {
+        Vuelo vuelo = this.vm.getVuelo(idVuelo);
+        if (vuelo == null) {
+            return Response.status(404).entity("Vuelo no encontrado").build();
+        }
+
+        List<Equipaje> equipajes = vuelo.getEquipajes();
+
+        if (equipajes == null || equipajes.isEmpty()) {
+            return Response.status(404).entity("No hay equipaje facturado para este vuelo").build();
+        }
+
+        GenericEntity<List<Equipaje>> entity = new GenericEntity<List<Equipaje>>(equipajes) {};
+        return Response.status(201).entity(entity).build();
+    }
+
 
     @DELETE
     @ApiOperation(value = "eliminar un Vuelo", notes = "asdasd")
